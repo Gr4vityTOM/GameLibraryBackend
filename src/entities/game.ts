@@ -6,4 +6,8 @@ export class Game{
     public Developer:string
   ) {
   }
+
+  public toString() {
+    return "Name: "+this.Name + ", ReleaseDate:"+ this.ReleaseDate + ", Genre:" + this.Genre + ", Developer:" + this.Developer;
+  }
 }

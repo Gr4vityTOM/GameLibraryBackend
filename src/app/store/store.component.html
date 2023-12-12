@@ -1,1 +1,34 @@
-<p>store works!</p>
+<table mat-table [dataSource]="games" class="mat-elevation-z8">
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let game">{{ game.Name }}</td>
+  </ng-container>
+
+  <!-- Year Column -->
+  <ng-container matColumnDef="year">
+    <th mat-header-cell *matHeaderCellDef>Year</th>
+    <td mat-cell *matCellDef="let game">{{ game.ReleaseDate }}</td>
+  </ng-container>
+
+  <!-- Genre Column -->
+  <ng-container matColumnDef="genre">
+    <th mat-header-cell *matHeaderCellDef>Genre</th>
+    <td mat-cell *matCellDef="let game">{{ game.Genre }}</td>
+  </ng-container>
+
+  <!-- Publisher Column -->
+  <ng-container matColumnDef="publisher">
+    <th mat-header-cell *matHeaderCellDef>Publisher</th>
+    <td mat-cell *matCellDef="let game">{{ game.Developer }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="buy">
+    <th mat-header-cell *matHeaderCellDef>Buy</th>
+    <td mat-cell *matCellDef="let game"><mat-button-toggle (click)="buyGame(game)">Buy</mat-button-toggle></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['name', 'year', 'genre', 'publisher','buy']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['name', 'year', 'genre', 'publisher','buy'];"></tr>
+</table>

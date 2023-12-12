@@ -14,10 +14,14 @@
         </li>
       </ul>
       <ul class="navbar-nav d-flex mb-2 mb-lg-0">
-        <li *ngIf="username; else elseBlock" class="nav-item">
-          {{username}}
+        <li>
           <button type="button" class="nav-link" (click)="logout()">Logout</button>
         </li>
+<!--        <li *ngIf="username; else elseBlock" class="nav-item">-->
+<!--          -->
+<!--          {{username}}-->
+<!--          <button type="button" class="nav-link" (click)="logout()">Logout</button>-->
+<!--        </li>-->
         <ng-template #elseBlock>
           <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
         </ng-template>
