@@ -5,6 +5,7 @@ import {Auth} from "../entities/auth";
 import {User} from "../entities/user";
 import {Group} from "../entities/group";
 import {MessageService} from "./message.service";
+import {Game} from "../entities/game";
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,12 @@ export class UsersService {
   private url = "http://localhost:8080/"
   private users = [
     new User("ฅʕ•̫͡•ʔฅ","MarekG@moj.otc"),
-    new User("Adolf","TopG1940@bigman.com",69,new Date(),"heselne"),
+    new User("Adolf","TopG1940@bigman.com",69,"heselne"),
     new User("Hedviga","Hedviga@kokot.ppc"),
     new User("Asisi","Asisi@kokot.ppc")
   ]
+  private boughtgames:Game[]=[]
+
   private loggedUserSubject = new BehaviorSubject(this.username);
   constructor(private http: HttpClient,
               private message: MessageService) { }
@@ -63,16 +66,18 @@ export class UsersService {
     this.loggedUserSubject.next(value)
   }
 
+  public buyGame(game:Game){
+    this.boughtgames.push(game)
+  }
+
+  public getBoughtGames() {
+    return this.boughtgames
+  }
   public loggedUser(): Observable<string> {
     return this.loggedUserSubject.asObservable();
   }
 
-  getUsersSynchronous(): User[]{
-    return this.users;
-  }
-  getLocalUsers():Observable<User[]>{
-    return of(this.users);
-  }
+
   getUsers():Observable<User[]>{
     return this.http.get<User[]>(this.url+"users")
       .pipe(map(response=>this.cloneUsers(response)),
@@ -87,18 +92,7 @@ export class UsersService {
       catchError(error=>this.errorHandling(error))
     )
   }
-  public getGroup(id: number): Observable<Group> {
-    return this.http.get<Group>(this.url + 'group/' + id).pipe(
-      map((jsonGroup) => Group.clone(jsonGroup)),
-      catchError((error) => this.errorHandling(error)),
-    )
-  }
-  getGroups(): Observable<Group[]> {
-    return this.http.get<Group[]>(this.url + 'groups' ).pipe(
-      map(jsonUsers => jsonUsers.map(jsonUsers=>Group.clone(jsonUsers))),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
+
 
   saveUser(user:User): Observable<User>{
     return this.http.post<User>(this.url+"users/"+this.token,user).pipe(
