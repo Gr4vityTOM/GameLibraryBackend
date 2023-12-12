@@ -4,15 +4,13 @@ import {Auth} from "../../entities/auth";
 import {UsersService} from "../../services/users.service";
 import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
-import {ModulesModule} from "../../modules/modules.module";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     FormsModule,
-    CommonModule,
-    ModulesModule
+    CommonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
