@@ -1,1 +1,21 @@
-<p>game-form works!</p>
+<form class="row g-3 needs-validation" (ngSubmit)="onSubmit" novalidate>
+    <div class="col-md-2">
+      <label for="validationCustom01" class="form-label">Game Title</label>
+      <input type="text" class="form-control" id="GameTitle" value="" required>
+    </div>
+    <div class="col-md-2">
+        <label for="validationCustom01" class="form-label">Genre</label>
+        <input type="text" class="form-control" id="GameGenre" value="" required>
+      </div>
+      <div class="col-md-2">
+        <label for="validationCustom01" class="form-label" >Release Date</label>
+        <input type="number" class="form-control" id="GameReleaseDate" value="" required min="1970">
+      </div>
+      <div class="col-md-2">
+        <label for="validationCustom01" class="form-label">Publisher</label>
+        <input type="text" class="form-control" id="gamePublisher" value="" required>
+      </div>
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit form</button>
+    </div>
+  </form>
