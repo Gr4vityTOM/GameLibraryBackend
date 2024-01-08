@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Game} from "../entities/game";
 import {HttpClient} from "@angular/common/http";
-import {MessageService} from "./message.service";
 import {Observable} from "rxjs";
 import {User} from "../entities/user";
 import {UsersService} from "./users.service";
@@ -11,7 +10,7 @@ import {UsersService} from "./users.service";
 })
 export class StoreService {
 
-  constructor(private http: HttpClient, private message: MessageService,private userService: UsersService) { }
+  constructor(private http: HttpClient,private userService: UsersService) { }
 
   private games = [
         new Game("Crysis",2007,"FPS","EA"),

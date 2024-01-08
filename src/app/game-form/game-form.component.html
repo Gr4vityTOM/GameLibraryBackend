@@ -1,21 +1,32 @@
-<form class="row g-3 needs-validation" (ngSubmit)="onSubmit" novalidate>
-    <div class="col-md-2">
-      <label for="validationCustom01" class="form-label">Game Title</label>
-      <input type="text" class="form-control" id="GameTitle" value="" required>
+<form (ngSubmit)="onSubmit()">
+  <div class="row mb-3-2">
+    <label for="Titlein" class="col-sm-2 col-form-label">Game Title</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Titlein" [(ngModel)]="title"  [ngModelOptions]="{standalone: true}">
     </div>
-    <div class="col-md-2">
-        <label for="validationCustom01" class="form-label">Genre</label>
-        <input type="text" class="form-control" id="GameGenre" value="" required>
-      </div>
-      <div class="col-md-2">
-        <label for="validationCustom01" class="form-label" >Release Date</label>
-        <input type="number" class="form-control" id="GameReleaseDate" value="" required min="1970">
-      </div>
-      <div class="col-md-2">
-        <label for="validationCustom01" class="form-label">Publisher</label>
-        <input type="text" class="form-control" id="gamePublisher" value="" required>
-      </div>
-    <div class="col-12">
-      <button class="btn btn-primary" type="submit">Submit form</button>
+  </div>
+  <br>
+  <div class="row mb-3-2">
+    <label for="Genrein" class="col-sm-2 col-form-label">Game Genre</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Genrein" [(ngModel)]="genre"  [ngModelOptions]="{standalone: true}">
     </div>
-  </form>
+  </div>
+  <br>
+  <div class="row mb-3-2">
+    <label for="Datein" class="col-sm-2 col-form-label">Release year</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="Datein" [(ngModel)]="releaseYear" [ngModelOptions]="{standalone: true}" min="1970" max="2023">
+    </div>
+  </div>
+  <br>
+  <div class="row mb-3">
+    <label for="Devin" class="col-sm-2 col-form-label">Publisher</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Devin" [(ngModel)]="publisher" [ngModelOptions]="{standalone: true}">
+    </div>
+  </div>
+  <br>
+  <button type="submit" class="btn btn-primary ">Submit</button>
+
+</form>

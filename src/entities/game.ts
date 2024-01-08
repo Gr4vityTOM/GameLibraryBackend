@@ -1,13 +1,13 @@
 export class Game{
   constructor(
-    public Name:string,
-    public ReleaseDate:number,
+    public Title:string,
+    public ReleaseYear:number,
     public Genre:string,
-    public Developer:string
+    public Publisher:string
   ) {
   }
 
   public toString() {
-    return "Name: "+this.Name + ", ReleaseDate:"+ this.ReleaseDate + ", Genre:" + this.Genre + ", Developer:" + this.Developer;
+    return "Name: "+this.Title + ", ReleaseDate:"+ this.ReleaseYear + ", Genre:" + this.Genre + ", Developer:" + this.Publisher;
   }
 }

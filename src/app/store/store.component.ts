@@ -5,13 +5,15 @@ import {MatTableModule} from "@angular/material/table";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {User} from "../../entities/user";
 import {UsersService} from "../../services/users.service";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-store',
   standalone: true,
   imports: [
     MatTableModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    NgIf
 
   ],
   templateUrl: './store.component.html',
@@ -30,6 +32,14 @@ export class StoreComponent implements OnInit{
 
   }
 
+  isBought(game:Game){
+    if(this.userService.getBoughtGames().includes(game)){
+      return false
+    }
+    else{
+      return true
+    }
+  }
   ngOnInit(): void {
     this.games = this.storeService.getGames();
   }

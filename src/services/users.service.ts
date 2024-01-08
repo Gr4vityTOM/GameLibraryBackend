@@ -3,8 +3,6 @@ import {BehaviorSubject, catchError, EMPTY, map, Observable, of, throwError} fro
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Auth} from "../entities/auth";
 import {User} from "../entities/user";
-import {Group} from "../entities/group";
-import {MessageService} from "./message.service";
 import {Game} from "../entities/game";
 
 @Injectable({
@@ -21,27 +19,9 @@ export class UsersService {
   private boughtgames:Game[]=[]
 
   private loggedUserSubject = new BehaviorSubject(this.username);
-  constructor(private http: HttpClient,
-              private message: MessageService) { }
+  constructor(private http: HttpClient) { }
 
-  errorHandling(httpError: any): Observable<never>{
-    if(httpError instanceof  HttpErrorResponse){
-      if(httpError.status==0){
-        this.message.error("Server is not aviable")
-      }
 
-      if(httpError.status<500){
-        this.message.error(httpError.message)
-        return EMPTY
-      }
-
-      if(httpError.status>=500){
-        this.message.error("Server has a serious problem")
-      }
-    }
-    console.log(httpError)
-    return EMPTY
-  }
   private get token(): string {
     return localStorage.getItem('umToken') || '';
   }
@@ -78,45 +58,9 @@ export class UsersService {
   }
 
 
-  getUsers():Observable<User[]>{
-    return this.http.get<User[]>(this.url+"users")
-      .pipe(map(response=>this.cloneUsers(response)),
-        catchError(error=>this.errorHandling(error))
-      )
-
-  }
-
-  getExtendedUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.url + 'users/' + this.token).pipe(
-      map(jsonUsers => this.cloneUsers(jsonUsers)),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
 
 
-  saveUser(user:User): Observable<User>{
-    return this.http.post<User>(this.url+"users/"+this.token,user).pipe(
-      map(jsonUser=>User.clone(jsonUser)),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
 
-  saveGroup(group:Group):Observable<Group>{
-    return this.http.post<Group>(this.url+"groups/"+this.token, group).pipe(
-      map(jsonGroup=>Group.clone(jsonGroup)),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
-  private cloneUsers(users:User[]):User[]{
-    return users.map(user=>User.clone(user))
-  }
-
-  deleteUser(userId:number):Observable<boolean>{
-    return this.http.delete(this.url + "user/"+userId+ "/" +this.token)
-      .pipe(map(()=>true),
-        catchError(error=>this.errorHandling(error))
-      )
-  }
   login(auth:Auth):Observable<boolean> {
     return this.http.post(this.url + "login", auth,{responseType: 'text'}).pipe(
       map(token => {
@@ -132,7 +76,6 @@ export class UsersService {
         }
         return throwError(() => error)
       }),
-      catchError(error=>this.errorHandling(error))
     )
   }
 
