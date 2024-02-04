@@ -34,7 +34,9 @@ export class StoreComponent implements OnInit{
       })
   }
   removeGame(game:Game){
+    if(confirm("Are you sure you want to remove this game from the store ?")){
       this.userService.removeGame(game).subscribe()
+      }
   }
   isAdmin():boolean{
     return true
