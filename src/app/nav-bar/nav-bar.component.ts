@@ -30,8 +30,11 @@ export class NavBarComponent {
   }
 
   logout() {
-    this.usersService.logout();
-    this.router.navigateByUrl("/")
+    if(confirm("Are you sure you want to log out ?")){
+      this.usersService.logout();
+      this.router.navigateByUrl("/")
+    }
+
   }
 }
 
