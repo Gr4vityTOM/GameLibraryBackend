@@ -24,10 +24,7 @@ export class LibraryComponent implements OnInit{
     games: Game[] = []
   constructor(private storeService:StoreService,private userService: UsersService,private router: Router) {}
   removeGame(game:Game){
-      if(confirm("Are you sure you want to remove this game from your library ?")){
-        this.userService.sellGame(game).subscribe()
-      }
-
+      this.userService.sellGame(game).subscribe()
   }
 
   ngOnInit() {

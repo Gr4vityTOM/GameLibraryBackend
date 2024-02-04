@@ -10,9 +10,9 @@ import {authGuard} from "../guards/auth.guard";
 export const routes: Routes = [
   {path:"library",component:LibraryComponent,canActivate:[authGuard]},
   {path:"store",component:StoreComponent,canActivate:[authGuard]},
-  {path:"game-form", component: GameFormComponent,canActivate:[authGuard]},
   {path:"login",component:LoginComponent},
   {path:"register",component:RegisterComponent},
+  {path:"game-form", component: GameFormComponent,canActivate:[authGuard]},
   {path:"",redirectTo:"/login",pathMatch: "full"},
   {path:"**",component:PageNotFoundComponent}
 

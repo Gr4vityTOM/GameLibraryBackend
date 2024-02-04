@@ -124,11 +124,11 @@ export class UsersService {
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
           if (error.status === 401) {
-            this.errorHandle.openDialog("Wrong credentials")
+            this.errorHandle.errorHandling("Zlé prihlasovacie udaje")
             return of(false);
           }
           else if (error.status === 0) {
-            this.errorHandle.errorHandling(error)
+            this.errorHandle.errorHandling("Neni pristup na server")
             return of(false);
           }
         }

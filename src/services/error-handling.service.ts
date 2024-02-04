@@ -4,7 +4,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {ErrorComponent} from "../app/error/error.component";
 import {coerceStringArray} from "@angular/cdk/coercion";
-import {UsersService} from "./users.service";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class ErrorHandlingService {
   constructor(private dialog: MatDialog) { }
 
 
-  errorHandling(httpError: HttpErrorResponse){
+  errorHandling(httpError: any){
     if(httpError instanceof  HttpErrorResponse){
       if(httpError.status==0){
 
@@ -22,7 +21,10 @@ export class ErrorHandlingService {
         return EMPTY
       }
 
-
+      else if(httpError.status<500){
+        this.openDialog(httpError.message)
+        return EMPTY
+      }
       else if(httpError.status==401){
         this.openDialog("Please log in again")
         return EMPTY
@@ -32,14 +34,9 @@ export class ErrorHandlingService {
         this.openDialog("Server has a serious problem")
         return EMPTY
       }
-      else if(httpError.status<500){
-        console.log("asd")
-        this.openDialog(httpError.message)
-        return EMPTY
-      }
     }
 
-    this.openDialog(httpError.statusText)
+    this.openDialog(httpError)
     return EMPTY
   }
 
