@@ -1,0 +1,21 @@
+mat-form-field {
+  display: block;
+  width: 500px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+}
+
+.my-button {
+  border: none;
+  border-radius: 5px;
+  background-color: #2b67c2;
+  color: white;
+  font-size: 20px;
+  padding: 5px 8px;
+
+}
+.mat-mdc-form-field-infix{
+  margin-top: 100px;
+}

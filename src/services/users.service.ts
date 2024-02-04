@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, catchError, EMPTY, map, Observable, of, throwError} from "rxjs";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Auth} from "../entities/auth";
 import {User} from "../entities/user";
-import {Group} from "../entities/group";
-import {MessageService} from "./message.service";
 import {Game} from "../entities/game";
+import {ErrorHandlingService} from "./error-handling.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,38 +17,20 @@ export class UsersService {
     new User("Hedviga","Hedviga@kokot.ppc"),
     new User("Asisi","Asisi@kokot.ppc")
   ]
-  private boughtgames:Game[]=[]
+  private boughtGames:Game[]=[]
 
   private loggedUserSubject = new BehaviorSubject(this.username);
-  constructor(private http: HttpClient,
-              private message: MessageService) { }
+  constructor(private http: HttpClient, private errorHandle: ErrorHandlingService) { }
 
-  errorHandling(httpError: any): Observable<never>{
-    if(httpError instanceof  HttpErrorResponse){
-      if(httpError.status==0){
-        this.message.error("Server is not aviable")
-      }
 
-      if(httpError.status<500){
-        this.message.error(httpError.message)
-        return EMPTY
-      }
-
-      if(httpError.status>=500){
-        this.message.error("Server has a serious problem")
-      }
-    }
-    console.log(httpError)
-    return EMPTY
-  }
-  private get token(): string {
-    return localStorage.getItem('umToken') || '';
+  public get token(): string {
+    return localStorage.getItem('Token') || "";
   }
   private set token(value: string) {
     if (value) {
-      localStorage.setItem('umToken', value);
+      localStorage.setItem('Token', value);
     } else {
-      localStorage.removeItem('umToken');
+      localStorage.removeItem('Token');
     }
   }
 
@@ -66,79 +47,101 @@ export class UsersService {
     this.loggedUserSubject.next(value)
   }
 
-  public buyGame(game:Game){
-    this.boughtgames.push(game)
+  buyGames(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.put<Game>(this.url+"course/"+gameID+"/reserve", {},{headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+
+  }
+  sellGame(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.put<Game>(this.url+"course/"+gameID, {},{headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+
   }
 
-  public getBoughtGames() {
-    return this.boughtgames
+  removeGame(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.delete<Game>(this.url+"course/"+gameID, {headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
   }
+
   public loggedUser(): Observable<string> {
     return this.loggedUserSubject.asObservable();
   }
 
 
-  getUsers():Observable<User[]>{
-    return this.http.get<User[]>(this.url+"users")
-      .pipe(map(response=>this.cloneUsers(response)),
-        catchError(error=>this.errorHandling(error))
+    getMyGames():Observable<Game[]>{
+    const headers = new HttpHeaders().set('Token', this.token)
+
+
+    return this.http.get<Game[]>(this.url+"myCourses", {headers})
+      .pipe(map(response=>{
+          const games =this.cloneGames(response)
+          this.saveBoughtGames(games)
+          return games
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
       )
 
   }
 
-  getExtendedUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.url + 'users/' + this.token).pipe(
-      map(jsonUsers => this.cloneUsers(jsonUsers)),
-      catchError(error=>this.errorHandling(error))
-    )
+  private cloneGames(games:Game[]):Game[]{
+    return games.map(game=>Game.clone(game))
+  }
+
+  private saveBoughtGames(games: Game[]): void {
+    this.boughtGames = games;
   }
 
 
-  saveUser(user:User): Observable<User>{
-    return this.http.post<User>(this.url+"users/"+this.token,user).pipe(
-      map(jsonUser=>User.clone(jsonUser)),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
 
-  saveGroup(group:Group):Observable<Group>{
-    return this.http.post<Group>(this.url+"groups/"+this.token, group).pipe(
-      map(jsonGroup=>Group.clone(jsonGroup)),
-      catchError(error=>this.errorHandling(error))
-    )
-  }
-  private cloneUsers(users:User[]):User[]{
-    return users.map(user=>User.clone(user))
-  }
 
-  deleteUser(userId:number):Observable<boolean>{
-    return this.http.delete(this.url + "user/"+userId+ "/" +this.token)
-      .pipe(map(()=>true),
-        catchError(error=>this.errorHandling(error))
-      )
-  }
   login(auth:Auth):Observable<boolean> {
     return this.http.post(this.url + "login", auth,{responseType: 'text'}).pipe(
       map(token => {
-        this.token = token;
-        this.loggedUserSubject.next(auth.name);
+        this.token = "Bearer "+token;
         return true;
       }),
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
           if (error.status === 401) {
+            this.errorHandle.openDialog("Wrong credentials")
+            return of(false);
+          }
+          else if (error.status === 0) {
+            this.errorHandle.errorHandling(error)
             return of(false);
           }
         }
-        return throwError(() => error)
+        return throwError(() => this.errorHandle.errorHandling(error))
       }),
-      catchError(error=>this.errorHandling(error))
     )
   }
 
 
   logout() {
-    this.token = '';
+    this.token = "";
     this.loggedUserSubject.next('');
   }
+
+
 }
