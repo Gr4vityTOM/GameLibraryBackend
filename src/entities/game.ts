@@ -1,13 +1,28 @@
-export class Game{
-  constructor(
-    public Title:string,
-    public ReleaseYear:number,
-    public Genre:string,
-    public Publisher:string
-  ) {
+export class Game {
+  public static clone(game: Game): Game {
+    return new Game(
+
+      game.title,
+      game.date,
+      game.description,
+      game.genre,
+      game.developer,
+      game.id
+    );
   }
 
+  constructor(
+    public title: string,
+    public date: string,
+    public description: string,
+    public genre: string,
+    public developer: string,
+    public id?: string
+
+) {}
+
+
   public toString() {
-    return "Name: "+this.Title + ", ReleaseDate:"+ this.ReleaseYear + ", Genre:" + this.Genre + ", Developer:" + this.Publisher;
+    return "ID: " + this.id + ", Name: " + this.title + ", ReleaseDate: " + this.date + ", Description: " + this.description + ", Genre: " + this.genre + ", Developer: " + this.developer;
   }
 }

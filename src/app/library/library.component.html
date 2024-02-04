@@ -1,31 +1,29 @@
-<table mat-table [dataSource]="Games" class="mat-elevation-z8">
-
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let game">{{ game.Title }}</td>
+<mat-table [dataSource]="games">
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.title}} </mat-cell>
   </ng-container>
 
-  <!-- Year Column -->
-  <ng-container matColumnDef="year">
-    <th mat-header-cell *matHeaderCellDef>Year</th>
-    <td mat-cell *matCellDef="let game">{{ game.ReleaseYear }}</td>
+  <ng-container matColumnDef="date">
+    <mat-header-cell *matHeaderCellDef> Release Date </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.date}} </mat-cell>
   </ng-container>
 
-  <!-- Genre Column -->
   <ng-container matColumnDef="genre">
-    <th mat-header-cell *matHeaderCellDef>Genre</th>
-    <td mat-cell *matCellDef="let game">{{ game.Genre }}</td>
+    <mat-header-cell *matHeaderCellDef> Genre </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.genre}} </mat-cell>
   </ng-container>
 
-  <!-- Publisher Column -->
-  <ng-container matColumnDef="publisher">
-    <th mat-header-cell *matHeaderCellDef>Publisher</th>
-    <td mat-cell *matCellDef="let game">{{ game.Publisher }}</td>
+  <ng-container matColumnDef="developer">
+    <mat-header-cell *matHeaderCellDef> Developer </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.developer}} </mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="remove">
+    <mat-header-cell *matHeaderCellDef> remove </mat-header-cell>
+    <mat-cell *matCellDef="let game"> <button mat-button (click)="removeGame(game)">Remove</button> </mat-cell>
+  </ng-container>
 
-
-  <tr mat-header-row *matHeaderRowDef="['name', 'year', 'genre', 'publisher']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['name', 'year', 'genre', 'publisher'];"></tr>
-</table>
+  <mat-header-row *matHeaderRowDef="['title', 'date', 'genre', 'developer', 'remove']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['title', 'date', 'genre', 'developer', 'remove']"></mat-row>
+</mat-table>

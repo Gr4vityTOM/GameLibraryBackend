@@ -5,13 +5,14 @@ import {LibraryComponent} from "./library/library.component";
 import {StoreComponent} from "./store/store.component";
 import { GameFormComponent } from './game-form/game-form.component';
 import {RegisterComponent} from "./register/register.component";
+import {authGuard} from "../guards/auth.guard";
 
 export const routes: Routes = [
-  {path:"library",component:LibraryComponent},
-  {path:"store",component:StoreComponent},
+  {path:"library",component:LibraryComponent,canActivate:[authGuard]},
+  {path:"store",component:StoreComponent,canActivate:[authGuard]},
   {path:"login",component:LoginComponent},
   {path:"register",component:RegisterComponent},
-  {path:"game-form", component: GameFormComponent},
+  {path:"game-form", component: GameFormComponent,canActivate:[authGuard]},
   {path:"",redirectTo:"/login",pathMatch: "full"},
   {path:"**",component:PageNotFoundComponent}
 

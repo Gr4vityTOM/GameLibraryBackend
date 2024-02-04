@@ -1,4 +1,18 @@
-.navbar-nav a.nav-link.active {
-  color:brown;
-  font-weight: bold;
+.title {
+  flex-grow: 1;
+}
+.container-fluid{
+  background-color: #2b67c2;
+}
+
+.bg-body-tertiary {
+  background-color: #2b67c2 !important;
+  margin-bottom: 20px;
+}
+.nav-items {
+  display: flex;
+  justify-content: space-between;
+  width: 300px; /* adjust as needed */
+  border: antiquewhite;
+
 }

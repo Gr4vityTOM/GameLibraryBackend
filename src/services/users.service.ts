@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, catchError, EMPTY, map, Observable, of, throwError} from "rxjs";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Auth} from "../entities/auth";
 import {User} from "../entities/user";
 import {Game} from "../entities/game";
+import {ErrorHandlingService} from "./error-handling.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,20 +17,20 @@ export class UsersService {
     new User("Hedviga","Hedviga@kokot.ppc"),
     new User("Asisi","Asisi@kokot.ppc")
   ]
-  private boughtgames:Game[]=[]
+  private boughtGames:Game[]=[]
 
   private loggedUserSubject = new BehaviorSubject(this.username);
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private errorHandle: ErrorHandlingService) { }
 
 
-  private get token(): string {
-    return localStorage.getItem('umToken') || '';
+  public get token(): string {
+    return localStorage.getItem('Token') || "";
   }
   private set token(value: string) {
     if (value) {
-      localStorage.setItem('umToken', value);
+      localStorage.setItem('Token', value);
     } else {
-      localStorage.removeItem('umToken');
+      localStorage.removeItem('Token');
     }
   }
 
@@ -46,17 +47,70 @@ export class UsersService {
     this.loggedUserSubject.next(value)
   }
 
-  public buyGame(game:Game){
-    this.boughtgames.push(game)
+  buyGames(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.put<Game>(this.url+"course/"+gameID+"/reserve", {},{headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+
+  }
+  sellGame(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.put<Game>(this.url+"course/"+gameID, {},{headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+
   }
 
-  public getBoughtGames() {
-    return this.boughtgames
+  removeGame(game:Game){
+    const headers = new HttpHeaders().set('Token', this.token)
+    const gameID = game.id
+
+    return this.http.delete<Game>(this.url+"course/"+gameID, {headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
   }
+
   public loggedUser(): Observable<string> {
     return this.loggedUserSubject.asObservable();
   }
 
+
+    getMyGames():Observable<Game[]>{
+    const headers = new HttpHeaders().set('Token', this.token)
+
+
+    return this.http.get<Game[]>(this.url+"myCourses", {headers})
+      .pipe(map(response=>{
+          const games =this.cloneGames(response)
+          this.saveBoughtGames(games)
+          return games
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+
+  }
+
+  private cloneGames(games:Game[]):Game[]{
+    return games.map(game=>Game.clone(game))
+  }
+
+  private saveBoughtGames(games: Game[]): void {
+    this.boughtGames = games;
+  }
 
 
 
@@ -64,24 +118,30 @@ export class UsersService {
   login(auth:Auth):Observable<boolean> {
     return this.http.post(this.url + "login", auth,{responseType: 'text'}).pipe(
       map(token => {
-        this.token = token;
-        this.loggedUserSubject.next(auth.name);
+        this.token = "Bearer "+token;
         return true;
       }),
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
           if (error.status === 401) {
+            this.errorHandle.errorHandling("Zlé prihlasovacie udaje")
+            return of(false);
+          }
+          else if (error.status === 0) {
+            this.errorHandle.errorHandling("Neni pristup na server")
             return of(false);
           }
         }
-        return throwError(() => error)
+        return throwError(() => this.errorHandle.errorHandling(error))
       }),
     )
   }
 
 
   logout() {
-    this.token = '';
+    this.token = "";
     this.loggedUserSubject.next('');
   }
+
+
 }

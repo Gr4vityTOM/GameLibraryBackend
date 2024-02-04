@@ -1,37 +1,37 @@
-<table mat-table [dataSource]="games" class="mat-elevation-z8">
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let game">{{ game.Name }}</td>
+<mat-table  [dataSource]="games">
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.title}} </mat-cell>
   </ng-container>
 
-  <!-- Year Column -->
-  <ng-container matColumnDef="year">
-    <th mat-header-cell *matHeaderCellDef>Year</th>
-    <td mat-cell *matCellDef="let game">{{ game.ReleaseDate }}</td>
+  <ng-container matColumnDef="date">
+    <mat-header-cell *matHeaderCellDef> Release Date </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.date}} </mat-cell>
   </ng-container>
 
-  <!-- Genre Column -->
   <ng-container matColumnDef="genre">
-    <th mat-header-cell *matHeaderCellDef>Genre</th>
-    <td mat-cell *matCellDef="let game">{{ game.Genre }}</td>
+    <mat-header-cell *matHeaderCellDef> Genre </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.genre}} </mat-cell>
   </ng-container>
 
-  <!-- Publisher Column -->
-  <ng-container matColumnDef="publisher">
-    <th mat-header-cell *matHeaderCellDef>Publisher</th>
-    <td mat-cell *matCellDef="let game">{{ game.Developer }}</td>
+  <ng-container matColumnDef="developer">
+    <mat-header-cell *matHeaderCellDef> Developer </mat-header-cell>
+    <mat-cell *matCellDef="let game"> {{game.developer}} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="buy">
-    <th mat-header-cell *matHeaderCellDef>Buy</th>
-    <td mat-cell *matCellDef="let game"><mat-button-toggle (click)="buyGame(game)" *ngIf="isBought(game); else bought">Buy</mat-button-toggle></td>
+    <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
+    <mat-cell *matCellDef="let game"><button mat-button (click)="buyGame(game)" *ngIf="isBought(game); else bought">Buy</button></mat-cell>
     <ng-template #bought>
-      <td mat-cell >Owned</td>
+      <mat-cell>Owned</mat-cell>
     </ng-template>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="['name', 'year', 'genre', 'publisher','buy']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['name', 'year', 'genre', 'publisher','buy'];"></tr>
-</table>
+  <ng-container matColumnDef="remove" >
+        <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
+        <mat-cell *matCellDef="let game"><button mat-button (click)="removeGame(game) " *ngIf="isAdmin()" >Remove</button></mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="['title', 'date', 'genre', 'developer', 'buy','remove']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['title', 'date', 'genre', 'developer', 'buy','remove']"></mat-row>
+</mat-table>
