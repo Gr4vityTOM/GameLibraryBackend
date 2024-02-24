@@ -8,6 +8,7 @@ export class User{
     public email:string,
     public id?:number,
     public password='',
+    public isAdmin?:boolean,
     public games: Game[] = []
 
   ) {

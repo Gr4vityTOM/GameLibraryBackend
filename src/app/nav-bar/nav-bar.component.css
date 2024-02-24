@@ -2,11 +2,11 @@
   flex-grow: 1;
 }
 .container-fluid{
-  background-color: #2b67c2;
+  background-color: #3579e0;
 }
 
 .bg-body-tertiary {
-  background-color: #2b67c2 !important;
+  background-color: #3c7cdc !important;
   margin-bottom: 20px;
 }
 .nav-items {

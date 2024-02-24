@@ -5,7 +5,7 @@ import {User} from "../../entities/user";
 import {Game} from "../../entities/game";
 import {StoreService} from "../../services/store.service";
 import {UsersService} from "../../services/users.service";
-import {Observable} from "rxjs";
+import {EMPTY, Observable} from "rxjs";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 
@@ -25,15 +25,19 @@ export class LibraryComponent implements OnInit{
   constructor(private storeService:StoreService,private userService: UsersService,private router: Router) {}
   removeGame(game:Game){
       if(confirm("Are you sure you want to remove this game from your library ?")){
-        this.userService.sellGame(game).subscribe()
+        this.userService.sellGame(game).subscribe(response => {
+          this.games=[]
+          let games$: Observable<Game[]> = this.userService.getMyGames();
+          games$.subscribe({
+            next: games => this.games = games
+          })
+        })
       }
 
   }
 
   ngOnInit() {
-      if(this.userService.token == ""){
-        this.router.navigateByUrl("/")
-      }
+
     let games$: Observable<Game[]> = this.userService.getMyGames();
     games$.subscribe({
       next: games => this.games = games

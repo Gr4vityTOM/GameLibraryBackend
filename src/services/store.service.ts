@@ -16,10 +16,6 @@ export class StoreService {
     private games: Game[] = [];
 
 
-  getsGames():Game[]{
-    return this.games;
-  }
-
   addGame(game:Game){
     const headers = new HttpHeaders().set('Token', this.userService.token);
 
@@ -29,10 +25,17 @@ export class StoreService {
     )
   }
 
-  getTempGames():Observable<Game[]>{
-    return of(this.games)
-  }
+  removeGame(game:Game){
+    const headers = new HttpHeaders().set('Token', this.userService.token)
+    const gameID = game.id
 
+    return this.http.delete<Game>(this.url+"course/"+gameID, {headers})
+      .pipe(map(response=>{
+          console.log(response)
+        }),
+        catchError(error=>this.errorHandle.errorHandling(error))
+      )
+  }
   getGames():Observable<Game[]>{
     const headers = new HttpHeaders().set('Token', this.userService.token)
 

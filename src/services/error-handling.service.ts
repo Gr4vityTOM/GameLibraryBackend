@@ -18,10 +18,13 @@ export class ErrorHandlingService {
     if(httpError instanceof  HttpErrorResponse){
       if(httpError.status==0){
 
-        this.openDialog("Server is not aviable")
+        this.openDialog("Server is not available")
         return EMPTY
       }
-
+      else if (httpError.status==400){
+        this.openDialog("Please fill out all the required fields")
+        return EMPTY
+      }
 
       else if(httpError.status==401){
         this.openDialog("Please log in again")
@@ -47,7 +50,7 @@ export class ErrorHandlingService {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.data = {ErrorMessage:error,MessageTitle:"error"}
+    dialogConfig.data = {ErrorMessage:error,MessageTitle:"Error"}
     this.dialog.closeAll()
     this.dialog.open(ErrorComponent, dialogConfig); // Open your dialog
   }

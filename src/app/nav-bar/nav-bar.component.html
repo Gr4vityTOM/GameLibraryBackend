@@ -15,20 +15,16 @@
           <a class="nav-link" routerLink="/library">Library</a>
         </li>
 
-        <li *ngIf="tokenExists; else null" class="nav-item">
+        <li *ngIf="tokenExists && isAdmin(); else null" class="nav-item">
           <a class="nav-link" routerLink="/game-form">Add game-form</a>
         </li>
       </ul>
       <ul class="navbar-nav d-flex mb-2 mb-lg-0">
-<!--        <li>-->
-<!--          <button type="button" class="nav-link" (click)="logout()">Logout</button>-->
-<!--        </li>-->
+
         <li *ngIf="tokenExists; else null" class="nav-item">
           <button type="button" class="nav-link" (click)="logout()">Logout</button>
         </li>
-        <ng-template #elseBlock>
-<!--          <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>-->
-        </ng-template>
+
       </ul>
     </div>
   </div>

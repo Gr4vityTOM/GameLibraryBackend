@@ -35,11 +35,17 @@ export class StoreComponent implements OnInit{
   }
   removeGame(game:Game){
     if(confirm("Are you sure you want to remove this game from the store ?")){
-      this.userService.removeGame(game).subscribe()
+      this.storeService.removeGame(game).subscribe(response=>{
+        this.games = []
+        let games$: Observable<Game[]> = this.storeService.getGames();
+        games$.subscribe({
+          next: games => this.games = games
+        })
+      })
       }
   }
   isAdmin():boolean{
-    return true
+    return this.userService.isAdmin()
   }
   isBought(game:Game){
     if(this.myGames.find(curgame => curgame.id === game.id)){
@@ -51,9 +57,7 @@ export class StoreComponent implements OnInit{
   }
 
   ngOnInit(): void{
-    if(this.userService.token == ""){
-      this.router.navigateByUrl("/")
-    }
+
 
     let games$: Observable<Game[]> = this.storeService.getGames();
     let myGames$: Observable<Game[]> = this.userService.getMyGames();

@@ -20,11 +20,11 @@ export class NavBarComponent {
               private router: Router){}
 
   ngOnInit(): void {
-    this.usersService.loggedUser().subscribe(username => {
-      this.username = username;
-    });
-  }
 
+  }
+  isAdmin():boolean{
+    return this.usersService.isAdmin()
+  }
   get tokenExists(): boolean {
     return !!localStorage.getItem('Token');
   }

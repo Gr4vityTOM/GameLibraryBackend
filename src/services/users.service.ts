@@ -11,15 +11,8 @@ import {ErrorHandlingService} from "./error-handling.service";
 })
 export class UsersService {
   private url = "http://localhost:8080/"
-  private users = [
-    new User("ฅʕ•̫͡•ʔฅ","MarekG@moj.otc"),
-    new User("Adolf","TopG1940@bigman.com",69,"heselne"),
-    new User("Hedviga","Hedviga@kokot.ppc"),
-    new User("Asisi","Asisi@kokot.ppc")
-  ]
-  private boughtGames:Game[]=[]
 
-  private loggedUserSubject = new BehaviorSubject(this.username);
+  private boughtGames:Game[]=[]
   constructor(private http: HttpClient, private errorHandle: ErrorHandlingService) { }
 
 
@@ -34,18 +27,26 @@ export class UsersService {
     }
   }
 
-  private get username():string{
-    return localStorage.getItem("umUsername")||""
+  public isAdmin():boolean{
+    if(this.role == "admin"){
+      return true
+    }else{
+      return false
+    }
   }
 
-  private set username(value:string){
-    if(value){
-      localStorage.setItem("umUsername",value)
-    }else{
-      localStorage.removeItem("umUsername")
-    }
-    this.loggedUserSubject.next(value)
+  private set role(role:string){
+    if (role) {
+      localStorage.setItem('Role', role);
+    } else {
+      localStorage.removeItem('Role');
+    }  }
+
+  private get role():string{
+    return localStorage.getItem('Role') || "";
   }
+
+
 
   buyGames(game:Game){
     const headers = new HttpHeaders().set('Token', this.token)
@@ -72,21 +73,9 @@ export class UsersService {
 
   }
 
-  removeGame(game:Game){
-    const headers = new HttpHeaders().set('Token', this.token)
-    const gameID = game.id
 
-    return this.http.delete<Game>(this.url+"course/"+gameID, {headers})
-      .pipe(map(response=>{
-          console.log(response)
-        }),
-        catchError(error=>this.errorHandle.errorHandling(error))
-      )
-  }
 
-  public loggedUser(): Observable<string> {
-    return this.loggedUserSubject.asObservable();
-  }
+
 
 
     getMyGames():Observable<Game[]>{
@@ -118,7 +107,9 @@ export class UsersService {
   login(auth:Auth):Observable<boolean> {
     return this.http.post(this.url + "login", auth,{responseType: 'text'}).pipe(
       map(token => {
-        this.token = "Bearer "+token;
+        let tokenarray = token.split(':')
+        this.role = tokenarray[1]
+        this.token = "Bearer "+tokenarray[0];
         return true;
       }),
       catchError(error => {
@@ -140,7 +131,6 @@ export class UsersService {
 
   logout() {
     this.token = "";
-    this.loggedUserSubject.next('');
   }
 
 
