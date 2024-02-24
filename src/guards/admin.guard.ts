@@ -3,17 +3,16 @@ import {inject} from "@angular/core";
 import {UsersService} from "../services/users.service";
 import {ErrorHandlingService} from "../services/error-handling.service";
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const usersService = inject(UsersService);
   const error = inject(ErrorHandlingService)
 
-
-  if(usersService.token!=""){
+  if(usersService.isAdmin() &&usersService.token!=null ){
     return true
   }else{
-    router.navigateByUrl("/login")
-    error.openDialog("Please log in")
+    router.navigateByUrl("/library")
+    error.openDialog("Not enough permissions")
     return false
   }
 };
